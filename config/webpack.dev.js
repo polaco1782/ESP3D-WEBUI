@@ -28,7 +28,8 @@ module.exports = {
     },
     devServer: {
         historyApiFallback: true, // to make our SPA works after a full reload, so that it serves 'index.html' when 404 response
-        open: true,
+        open: false,
+        host: "127.0.0.1",
         static: {
             directory: path.resolve(__dirname, "server", "public"),
         },

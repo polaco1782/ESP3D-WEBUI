@@ -46,7 +46,7 @@ const {
 )
 
 const WebSocketServer = require("ws").Server,
-    wss = new WebSocketServer({ port: 8089 })
+    wss = new WebSocketServer({ port: 8089, host: "127.0.0.1" })
 
 // Prefer .gz: if client asks for toto.html (or /), serve toto.html.gz with Content-Encoding: gzip when present
 app.use("/", (req, res, next) => {
@@ -67,7 +67,7 @@ app.use("/sd", express.static(serverpath + "sd"))
 app.use("/", expressStaticGzip(serverpath + "Flash"))
 app.use(fileUpload({ preserveExtension: true, debug: false }))
 
-app.listen(port, () => console.log("Env:", subtarget, ":", target))
+app.listen(port, "127.0.0.1", () => console.log("Env:", subtarget, ":", target))
 app.timeout = 2000
 
 //app.use(express.urlencoded({ extended: false }));
@@ -340,11 +340,9 @@ wss.on("connection", (socket, request) => {
     console.log(wscolor("[ws] New connection"))
     console.log(wscolor(`[ws] currentID:${currentID}`))
     socket.send(`currentID:${currentID}`)
-    wss.clients.forEach(function each(client) {
-        if (client.readyState === WebSocket.OPEN) {
-            client.send(`activeID:${currentID}`)
-        }
-    })
+    // Local preview tabs can coexist while reviewing the UI. Never evict another
+    // mock client; physical ESP3D connection policy remains unchanged.
+    socket.send(`activeID:${currentID}`)
     if (sensorInterval != -1) {
         clearInterval(sensorInterval)
         sensorInterval = setInterval(() => {

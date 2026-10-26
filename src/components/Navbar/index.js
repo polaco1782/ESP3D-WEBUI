@@ -22,7 +22,7 @@
 import { Fragment, h } from "preact"
 import { useState, useEffect, useRef } from "preact/hooks"
 import { iconsFeather } from "../Images"
-import { iconsTarget, AppLogo } from "../../targets"
+import { iconsTarget, AppLogo, Target } from "../../targets"
 import { Link } from "../Router"
 import { T } from "../Translations"
 import {
@@ -50,7 +50,7 @@ import {
  */
 const defaultLinks = [
     {
-        label: <AppLogo bgcolor="#ffffff" />,
+        label: <span class="better-brand"><span class="better-brand-mark">b</span><span><small>(better)</small> ESP3D</span></span>,
         icon: null,
         href: "/about",
     },
@@ -210,7 +210,7 @@ const Navbar = () => {
                                         }
                                     >
                                         {typeof label === "string"
-                                            ? T(label)
+                                            ? (Target === "Marlin" ? ({ S13: "Workspace", S123: "Device" }[label] || T(label)) : T(label))
                                             : label}
                                     </label>
                                 </Link>

@@ -81,6 +81,9 @@ const httpAdapter = (url, params = {}, setUploadProgress = () => {}) => {
                     }`
                 )
                 e.code = xhr.status
+                if (!xhr.responseType || xhr.responseType === "text") {
+                    e.responseText = xhr.responseText
+                }
                 reject(e)
             }
         }

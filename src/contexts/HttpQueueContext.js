@@ -140,7 +140,8 @@ const HttpQueueContextProvider = ({ children }) => {
                 }
             }
             if (onFail) {
-                onFail(e.message) //to-check
+                // Preserve the message API; optional details identify expected conflicts.
+                onFail(e.message, e)
             }
         } finally {
             //check if need to remove or not

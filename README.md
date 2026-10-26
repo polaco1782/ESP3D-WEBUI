@@ -1,7 +1,31 @@
-# ESP3D-WEBUI 3.1 ![ESP3D-WEBUI](https://img.shields.io/badge/dynamic/json?label=Version&query=$.version&url=https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/refs/heads/3.1/info.json)
+# (better) ESP3D — WebUI 3.1 ![ESP3D-WEBUI](https://img.shields.io/badge/dynamic/json?label=Version&query=$.version&url=https://raw.githubusercontent.com/luc-github/ESP3D-WEBUI/refs/heads/3.1/info.json)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-35-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
+
+## A better ESP3D printer interface
+
+**(better) ESP3D** is a community fork of [ESP3D-WEBUI](https://github.com/luc-github/ESP3D-WEBUI/tree/3.1), focused on making everyday Marlin printing easier. It builds on the work of Luc Lebosse and the upstream contributors; the existing license and attribution remain in place.
+
+### What changed
+
+- **Print from the file list:** upload G-code to the ESP32 SD card and choose **Print**, with a confirmation naming the file.
+- **Follow the current job:** acknowledged file progress, Pause, Resume and Cancel beside the job status.
+- **Find controls quickly:** Print, Prepare, Temperatures and Console tabs, labeled buttons, file search, icons and a responsive layout.
+- **See connection and temperature information:** a connection indicator, nozzle/bed readings and clear status or fault messages.
+- **Respect active streams:** file mutations and manual preparation controls lock during streaming; automatic polling handles the firmware's UART ownership response.
+
+The redesigned workspace targets **Marlin with an ESP32 directly connected to its own SD card**. It starts jobs with `[ESP700]/SD/<file>` and reads/controls them through `[ESP701]`. Pause, cancellation and fault behavior depend on the installed ESP3D firmware; this project changes the browser interface. The existing dashboards for other firmware targets remain available, but were not validated as part of this redesign.
+
+### One file to install
+
+The main UI remains a **single self-contained `index.html.gz`** with its HTML, CSS, JavaScript and icons inside. Upload it to ESP3D's internal Flash filesystem. It runs without a separate web server or SD-hosted frontend assets.
+
+`preferences.json` stores editable settings separately so UI updates can preserve your choices. Optional camera and recovery pages are separate utilities, not dependencies of the main dashboard.
+
+See [installation and printing](docs/BETTER_ESP3D.md) for firmware requirements, build commands, limited-flash installation and control behavior. See [the UI review](docs/WEBUI_REVIEW.md) for implementation details and validation boundaries.
+
+## Upstream project
 
 using Preact per @aganov suggestion  
 Rewrite per @alxblog suggestion to use proper Preactjs API and lighter css code: use spectre.css instead of bootstrap 4.x
@@ -49,7 +73,7 @@ npm run dev-<system>-<firmware>
     -   `marlin`, `marlin-embedded` (esp3dlib), `repetier`, `smoothieware` for `printer` 
     -   `grbl` for `sand`
 
-will open http://localhost:8088 which display the webUI using a local test server
+Open http://localhost:8088 manually to view the WebUI using the local mock server. Development services bind to loopback; they do not connect to a physical printer.
 
 ### Build index.html.gz to /dist folder
 

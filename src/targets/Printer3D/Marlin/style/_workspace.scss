@@ -1,0 +1,131 @@
+// Marlin workspace: quiet surfaces, explicit actions, and readable state.
+body { background: #f3f6f7; color: #243b43; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+#menu { border-bottom: 1px solid #dce5e7; background: #fff; }
+#menu > .navbar { background: #fff; min-height: 74px; padding: 0 28px; }
+#menu .btn-link { color: #63777d; font-size: 14px; padding: 10px 14px; height: auto; }
+#menu .active { color: #126a60 !important; background: #e9f4f0 !important; border-radius: 9px; }
+.better-brand { display: inline-flex; align-items: center; gap: 10px; color: #183f3c; font-size: 20px; font-weight: 750; white-space: nowrap; margin-right: 28px; }
+.better-brand small { font-weight: 450; font-size: 16px; }
+.better-brand-mark { display: inline-grid; place-items: center; border-radius: 12px; width: 38px; height: 38px; background: #176f62; color: #fff; font-size: 27px; font-weight: 600; }
+#main-container { padding: 0; }
+.better-workspace { max-width: 1320px; margin: 0 auto; padding: 34px 32px 48px; }
+.better-workspace [hidden] { display: none !important; }
+.workspace-heading { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 28px; }
+.eyebrow, .card-eyebrow { font-size: 11px; letter-spacing: 1.5px; font-weight: 700; color: #657c80; }
+.workspace-heading h1 { font-size: clamp(25px, 3vw, 35px); letter-spacing: -1px; color: #203b3b; margin: 8px 0; font-weight: 700; }
+.workspace-heading p { color: #687d82; font-size: 14px; margin: 0; }
+.connection-pill { border-radius: 30px; padding: 8px 12px; display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 650; white-space: nowrap; background: #e4f3eb; color: #1f7554; }
+.connection-pill.offline { background: #fff0de; color: #8b5800; }
+.workspace-navigation { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 0 20px; margin-bottom: 6px; }
+.workspace-navigation nav { display: flex; gap: 5px; padding: 5px; background: #e8edef; border-radius: 12px; }
+.workspace-tab { background: transparent; border: 0; border-radius: 8px; padding: 10px 17px; font-size: 13px; color: #5d747b; font-weight: 600; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.workspace-tab.selected { background: white; color: #126a60; box-shadow: 0 2px 4px #213b3b0a; }
+.emergency-button { display: inline-flex; align-items: center; gap: 6px; padding: 10px 12px; border: 1px solid #edc5c1; border-radius: 8px; background: #fff7f5; color: #a03731; font-size: 12px; font-weight: 650; cursor: pointer; }
+.better-workspace button:focus-visible, .better-workspace input:focus-visible, .better-workspace select:focus-visible { outline: 3px solid #258e9d; outline-offset: 3px; }
+.better-workspace button:disabled { cursor: not-allowed; opacity: .45; }
+.print-layout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr); gap: 22px; align-items: start; }
+.print-sidebar { display: grid; gap: 18px; }
+.better-workspace .panel, .job-card, .temperature-summary { background: #fff; border: 1px solid #dee7e8; border-radius: 14px; box-shadow: 0 4px 18px #213b3b03; }
+.better-workspace .panel > .navbar { padding: 15px 18px; border-bottom: 1px solid #e6edee; }
+.better-workspace .panel .navbar, .better-workspace .panel .navbar-section { background: #fff; color: #29444a; }
+.better-workspace .panel > .navbar strong { font-size: 15px; }
+.better-workspace .panel > .navbar svg { width: 18px; height: 18px; }
+.better-workspace .panel .btn-close { display: none; }
+.better-workspace .panel-body { padding: 16px 18px; }
+.better-workspace .btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid #d6e1e3; border-radius: 8px; color: #476069; background: #fff; height: 36px; padding: 7px 12px; font-size: 12px; font-weight: 600; box-shadow: none; }
+.better-workspace .btn:hover:not(:disabled) { border-color: #148273; background: #eff7f4; }
+.better-workspace .btn-primary { background: #187c6b; border-color: #187c6b; color: #fff; }
+.better-workspace .btn-primary:hover:not(:disabled) { background: #105e52; color: white; }
+.better-workspace .form-input, .better-workspace .form-select { border-radius: 8px; border-color: #dce5e7; color: #38565d; font-size: 13px; height: 38px; }
+.files-workspace .panel { height: 600px; }
+.file-workflow-toolbar { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
+.file-search { margin-bottom: 14px; padding-left: 13px; }
+.files-workspace .input-group { align-items: center; margin-bottom: 12px; gap: 8px; }
+.files-workspace .form-control-path { color: #71858a; font-size: 12px; overflow-wrap: anywhere; }
+.files-workspace .files-list { flex: 1; min-height: 140px; border-top: 1px solid #edf1f2; }
+.files-workspace .file-line { padding: 12px 0; border-bottom: 1px solid #edf1f2; min-height: 62px; gap: 10px; }
+.files-workspace .file-line-name { min-width: 0; color: #314d54; font-size: 13px; gap: 10px; }
+.files-workspace .file-line-name label { overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+.files-workspace .file-line-name > svg { color: #5b9990; flex-shrink: 0; width: 20px; }
+.files-workspace .file-line-controls { gap: 6px; align-items: center; font-size: 11px; color: #73878b; }
+.files-workspace .file-print-button { min-width: 72px; }
+.files-workspace .files-list-footer { border-top: 1px solid #e6edee; font-size: 11px; color: #71858a; padding-top: 12px !important; }
+.files-empty { padding: 48px 12px; text-align: center; color: #73878b; font-size: 13px; }
+.files-empty svg { color: #86aaa3; }
+.files-empty h3 { font-size: 17px; color: #36554f; margin-top: 15px; }
+.job-card, .temperature-summary { padding: 23px; }
+.card-eyebrow { display: flex; align-items: center; gap: 9px; }
+.status-dot { margin-left: auto; height: 7px; width: 7px; border-radius: 50%; background: #b7c8c5; }
+.job-active .status-dot { background: #25976b; box-shadow: 0 0 0 4px #e9f6ed; }
+.job-card h2 { font-size: 25px; font-weight: 650; letter-spacing: -.5px; margin: 16px 0; color: #233f43; }
+.job-empty { border-radius: 10px; padding: 16px 18px; background: #f5f8f7; text-align: center; }
+.job-empty-icon { margin: 8px auto 14px; color: #6c9e92; }
+.job-empty p { font-size: 13px; color: #657b7f; line-height: 1.7; margin-bottom: 6px; }
+.job-filename { font-size: 14px; color: #49686c; overflow-wrap: anywhere; }
+.job-progress-heading { display: flex; justify-content: space-between; font-size: 12px; margin-top: 24px; }
+.job-card progress { appearance: none; width: 100%; height: 8px; border: 0; border-radius: 6px; overflow: hidden; margin-top: 10px; background: #e9f0ed; }
+.job-card progress::-webkit-progress-bar { background: #e9f0ed; }
+.job-card progress::-webkit-progress-value { background: #19806d; border-radius: 6px; }
+.job-hint { font-size: 11px; color: #738489; line-height: 1.6; margin: 10px 0 0; }
+.job-actions { display: flex; gap: 10px; margin-top: 20px; }
+.job-actions .btn { flex: 1; height: 40px; }
+.job-actions .cancel-print { color: #a1453d; border-color: #edcfca; }
+.job-notice { display: flex; gap: 6px; font-size: 12px; color: #3b7964; margin: 16px 0 0; }
+.job-notice svg { flex-shrink: 0; }
+.temperature-readings { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0 14px; }
+.temperature-readings span { display: block; font-size: 12px; color: #7d8c91; margin-bottom: 5px; }
+.temperature-readings strong { font-size: 19px; font-weight: 600; color: #9c6542; }
+.text-action { padding: 0; display: inline-flex; gap: 7px; align-items: center; color: #187c6b; font-size: 12px; border: 0; background: transparent; cursor: pointer; }
+.workspace-tip { display: flex; gap: 14px; padding: 0 7px; color: #76898d; font-size: 12px; line-height: 1.8; }
+.workspace-tip > span { font-size: 24px; font-weight: 600; color: #adc6c0; }
+.workspace-tip strong { color: #4e6b70; }
+.workspace-alert { display: flex; align-items: start; gap: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid #edc7bf; background: #fff4ee; border-radius: 10px; color: #984735; font-size: 13px; }
+.workspace-alert > svg { flex-shrink: 0; }
+.workspace-alert p { margin: 5px 0 0; overflow-wrap: anywhere; }
+.workspace-alert > .btn { margin-left: auto; flex-shrink: 0; }
+.prepare-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.better-workspace fieldset { padding: 0; border: 0; margin: 0; min-width: 0; }
+.better-workspace fieldset:disabled { opacity: .55; pointer-events: none; }
+.monitor-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 20px; }
+.monitor-layout fieldset .panel { height: 550px; }
+.console-layout .panel { height: 650px; }
+.section-description { color: #6b8287; font-size: 13px; margin: 0 0 18px; }
+.print-confirm strong { display: block; color: #176f62; margin-bottom: 14px; overflow-wrap: anywhere; }
+@media (max-width: 850px) {
+    .better-workspace { padding: 22px 18px; }
+    .print-layout { grid-template-columns: minmax(0, 1fr); }
+    .print-sidebar { grid-row: 1; }
+    .job-empty { display: none; }
+    .temperature-summary, .workspace-tip { display: none; }
+    .job-card h2 { margin-bottom: 0; }
+    .workspace-navigation { flex-wrap: wrap; }
+    #menu > .navbar { padding: 10px 16px; min-height: 65px; }
+    .better-brand { margin-right: 8px; }
+    .prepare-grid, .monitor-layout { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 480px) {
+    .workspace-heading { align-items: start; }
+    .workspace-heading h1 { font-size: 26px; }
+    .workspace-heading p { font-size: 12px; max-width: 230px; }
+    .connection-pill { font-size: 0; padding: 8px; }
+    .workspace-tab { padding: 10px; gap: 5px; font-size: 11px; }
+    .workspace-navigation nav { width: 100%; justify-content: space-between; }
+    .file-workflow-toolbar .btn { font-size: 11px; padding: 6px 9px; }
+    .files-workspace .file-line { flex-wrap: wrap; }
+    .files-workspace .file-line-name { flex-basis: 100%; }
+    .files-workspace .file-line-controls { margin-left: auto; }
+    .workspace-alert { flex-wrap: wrap; }
+    #menu .btn-link { padding: 8px; }
+    .better-brand { font-size: 17px; }
+    .better-brand small { font-size: 12px; }
+}
+
+.files-workspace .filesystem-select-wrap { min-width: 160px; }
+
+.files-workspace .filesystem-select-wrap .form-select { width: 100% !important; min-width: 160px; max-width: none; }
+@media (max-width: 480px) {
+    .workspace-navigation nav { display: grid; grid-template-columns: 1fr 1fr; }
+    .workspace-tab { justify-content: start; min-height: 40px; }
+    .better-workspace { padding: 20px 14px; }
+}
+.files-workspace .panel.panel-dashboard .panel-body.files-panel-body .filesystem-select-wrap { min-width: 160px; flex: 0 0 160px; }

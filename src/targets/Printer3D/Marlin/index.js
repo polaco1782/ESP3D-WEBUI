@@ -42,7 +42,7 @@ import { addObjectItem, removeObjectItem } from "../../../components/Helpers"
 const Target = "Marlin"
 const targetCategory = "Printer3D"
 const webUIbuild = "M2.1"
-const Name = "ESP3D"
+const Name = "(better) ESP3D"
 const fwUrl = [
     "https://github.com/luc-github/ESP3D/tree/3.0",
     "https://github.com/luc-github/ESP3D-TFT",

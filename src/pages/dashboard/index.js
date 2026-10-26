@@ -18,6 +18,8 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { Fragment, h } from "preact"
+import { Target } from "../../targets"
+import PrinterWorkspace from "../../targets/Printer3D/Marlin/PrinterWorkspace"
 import { useEffect, useState, useRef } from "preact/hooks"
 import { useUiContext, useUiContextFn, useSettingsContext } from "../../contexts"
 import { T } from "../../components/Translations"
@@ -109,7 +111,7 @@ const keyboardEventHandlerDown = (e) => {
 }
 let intialisationDone = false
 
-const Dashboard = () => {
+const LegacyDashboard = () => {
     const iconsList = { ...iconsTarget, ...iconsFeather }
     const { modals, panels, uisettings, shortcuts } = useUiContext()
     const { interfaceSettings } = useSettingsContext()
@@ -627,4 +629,5 @@ const Dashboard = () => {
     )
 }
 
+const Dashboard = () => Target === "Marlin" ? <PrinterWorkspace /> : <LegacyDashboard />
 export default Dashboard
