@@ -25,7 +25,7 @@ import { useUiContextFn, useSettingsContextFn } from "../../../contexts"
 const capabilities = {
     Process: (path, filename) => {
         if (
-            (useSettingsContextFn.getValue("Streaming") == "Enabled" &&
+            (useSettingsContextFn.getValue("Streaming") !== "Disabled" &&
                 useSettingsContextFn.getValue("SDConnection") == "direct") ||
             useSettingsContextFn.getValue("SDConnection") == "shared"
         )
@@ -126,16 +126,16 @@ const commands = {
     },
     play: (path, filename) => {
         if (
-            useSettingsContextFn.getValue("Streaming") == "Enabled" &&
+            useSettingsContextFn.getValue("Streaming") !== "Disabled" &&
             useSettingsContextFn.getValue("SDConnection") == "direct"
         ) {
             const fullpath = (
-                "/sd" +
+                "/SD" +
                 path +
                 (path.endsWith("/") ? "" : "/") +
                 filename
             ).replaceAll("//", "/")
-            const cmd = "[ESP700]stream=" + fullpath
+            const cmd = "[ESP700]" + fullpath
             return {
                 type: "cmd",
                 cmd,

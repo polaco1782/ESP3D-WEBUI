@@ -53,8 +53,8 @@ const supportedFileSystems = [
         name: "S190",
         depend: () => {
             return (
-                useUiContextFn.getValue("sd") &&
-                useSettingsContextFn.getValue("SDConnection") != "none"
+                useSettingsContextFn.getValue("SDConnection") === "direct" ||
+                (useUiContextFn.getValue("sd") && useSettingsContextFn.getValue("SDConnection") === "shared")
             )
         },
     },

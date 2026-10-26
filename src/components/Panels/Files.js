@@ -54,7 +54,7 @@ let currentFSNeedInit = true
  * Local const
  *
  */
-const FilesPanel = () => {
+const FilesPanel = ({ onStartPrint, printLocked = false }) => {
 
     const valids = files.supported.reduce((acc, element) => {
         if (element.depend)
@@ -64,6 +64,7 @@ const FilesPanel = () => {
                 }
         return acc
     },[])
+    if (currentFS == "" && onStartPrint && valids.includes("DIRECTSD")) currentFS = "DIRECTSD"
     if (currentFS == "") {
         currentFS = useUiContextFn.getValue("default_filesystem")
         if (typeof currentFS === "undefined" || !valids.includes(currentFS)) currentFS = ""
@@ -74,6 +75,7 @@ const FilesPanel = () => {
     const [fileSystem, setFileSystem] = useState(currentFS)
     const [filesList, setFilesList] = useState(filesListCache[currentFS])
     const [menu, setMenu] = useState(null)
+    const [search, setSearch] = useState("")
     const { createNewRequest, abortRequest } = useHttpFn
     const { processData } = useTargetContextFn
     const { modals, toasts } = useUiContext()
@@ -297,6 +299,7 @@ const FilesPanel = () => {
     }
 
     const filesSelected = (e) => {
+        if (printLocked) return
         const content = []
         const length = fileref.current.files.length
         for (let index = 0; index < length; index++) {
@@ -569,11 +572,13 @@ const FilesPanel = () => {
         setupFileInput()
     }, [])
     const openFileUploadBrowser = () => {
+        if (printLocked) return
         useUiContextFn.haptic()
         fileref.current.value = ""
         fileref.current.click()
     }
     const showCreateDirModal = () => {
+        if (printLocked) return
         useUiContextFn.haptic()
         let name
         showModal({
@@ -668,25 +673,29 @@ const FilesPanel = () => {
 
                 <span class="navbar-section">
                     <span class="full-height">
-                        {fileSystem != "" && !isLoading && (
+                        {fileSystem != "" && !isLoading && !onStartPrint && (
                             <PanelMenu items={menu} />
                         )}
                         <FullScreenButton
                             elementId={id}
                         />
-                        <CloseButton
+                        {!onStartPrint && <CloseButton
                             elementId={id}
                             hideOnFullScreen={true}
-                        />
+                        />}
                     </span>
                 </span>
             </div>
             <div class="panel-body panel-body-dashboard files-panel-body">
+            {onStartPrint && <div class="file-workflow-toolbar"><button class="btn btn-primary" disabled={isLoading || printLocked || !files.capability(currentFS, "Upload")} onClick={openFileUploadBrowser}><Upload size={17} />Upload G-code</button><button class="btn" disabled={isLoading || printLocked} onClick={onRefresh}><RefreshCcw size={17} />Refresh</button><button class="btn" disabled={isLoading || printLocked || !files.capability(currentFS, "CreateDir")} onClick={showCreateDirModal}><FolderPlus size={17} />New folder</button></div>}
+            {onStartPrint && <input class="form-input file-search" type="search" aria-label="Search files" placeholder="Search files…" value={search} onInput={e => setSearch(e.target.value)} />}
             <div class="input-group">
                 <div class="filesystem-select-wrap">
                     <select
                         class="form-select"
                         onchange={onSelectFS}
+                        disabled={printLocked}
+                        aria-label="File storage"
                         value={currentFS}
                     >
                         {files.supported.map((element) => {
@@ -694,7 +703,7 @@ const FilesPanel = () => {
                                 if (element.depend())
                                     return (
                                         <option value={element.value}>
-                                            {T(element.name)}
+                                            {onStartPrint && element.value === "DIRECTSD" ? "ESP32 SD card" : T(element.name)}
                                         </option>
                                     )
                         })}
@@ -720,7 +729,7 @@ const FilesPanel = () => {
                 }}
                 onDrop={(e) => {
                     dropRef.current.classList.remove("drop-zone--over")
-                    if (e.dataTransfer.files.length) {
+                    if (!printLocked && e.dataTransfer.files.length) {
                         const length = e.dataTransfer.items.length
                         if (!fileref.current.multiple && length > 1) {
                             toasts.addToast({
@@ -805,9 +814,11 @@ const FilesPanel = () => {
                                 </div>
                             </div>
                         )}
-                        {filesList.files.map((line) => {
+                        {onStartPrint && filesList.files.length === 0 && <div class="files-empty"><Upload size={32} /><h3>No files here yet</h3><p>Upload a .gcode or .gco file to get started.</p></div>}
+                        {onStartPrint && filesList.files.length > 0 && !filesList.files.some(line => line.name.toLowerCase().includes(search.toLowerCase())) && <p class="files-empty">No files match your search.</p>}
+                        {filesList.files.filter(line => !onStartPrint || line.name.toLowerCase().includes(search.toLowerCase())).map((line) => {
                             return (
-                                <div class="file-line form-control">
+                                <div class="file-line form-control" key={line.name}>
                                     <div
                                         class={`feather-icon-container file-line-name ${
                                             files.capability(
@@ -819,7 +830,7 @@ const FilesPanel = () => {
                                         }`}
                                         onclick={(e) => {
                                             useUiContextFn.haptic()
-                                            ElementClicked(e, line)
+                                            if (!printLocked) ElementClicked(e, line)
                                         }}
                                     >
                                         {line.size == -1 ? (
@@ -833,18 +844,24 @@ const FilesPanel = () => {
                                         {line.size != -1 && (
                                             <Fragment>
                                                 <div>{line.size}</div>
-                                                {files.capability(
+                                                {(files.capability(
                                                     currentFS,
                                                     "Process",
                                                     currentPath[currentFS],
                                                     line.name
-                                                ) && (
+                                                ) && (!onStartPrint || currentFS === "DIRECTSD")) && (
                                                     <ButtonImg
                                                         m1
                                                         ltooltip
                                                         data-tooltip={T("S74")}
+                                                        label={onStartPrint ? "Print" : undefined}
+                                                        showlow={!!onStartPrint}
+                                                        className={onStartPrint ? "btn-primary file-print-button" : ""}
+                                                        aria-label={onStartPrint ? `Print ${line.name}` : T("S74")}
+                                                        disabled={printLocked}
                                                         icon={<Play />}
                                                         onClick={(e) => {
+                                                            if (onStartPrint) { onStartPrint(currentFS, currentPath[currentFS], line.name); return }
                                                             e.target.blur()
                                                             useUiContextFn.haptic()
                                                             const cmd =
@@ -862,12 +879,12 @@ const FilesPanel = () => {
                                                         }}
                                                     />
                                                 )}
-                                                {!files.capability(
+                                                {!(files.capability(
                                                     currentFS,
                                                     "Process",
                                                     currentPath[currentFS],
                                                     line.name
-                                                ) && <div style="width:2rem" />}
+                                                ) && (!onStartPrint || currentFS === "DIRECTSD")) && <div style="width:2rem" />}
                                             </Fragment>
                                         )}
                                         {files.capability(
@@ -887,6 +904,7 @@ const FilesPanel = () => {
                                                         : T("S100")
                                                 }
                                                 icon={<Trash2 />}
+                                                disabled={printLocked}
                                                 onClick={(e) => {
                                                     useUiContextFn.haptic()
                                                     e.target.blur()

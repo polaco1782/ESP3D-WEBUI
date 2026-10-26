@@ -17,7 +17,8 @@
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 import { h } from "preact"
-import { useState } from "preact/hooks"
+import { useState, useRef } from "preact/hooks"
+import { StreamPollingGuard } from "./streamPollingGuard"
 import { webUIversion } from "../components/App/version"
 import {
     espHttpURL,
@@ -65,7 +66,13 @@ const useSettings = () => {
     const { interfaceSettings, connectionSettings, activity } =
         useSettingsContext()
     const { defaultRoute, setActiveRoute } = useRouterContext()
+    const streamPollingGuard = useRef(new StreamPollingGuard())
+    // This sender is used only for configured automatic polling. Manual
+    // commands retain their normal error reporting and transport restrictions.
     const sendCommand = (cmd, id) => {
+        const requestedCommand = cmd
+        cmd = streamPollingGuard.current.command(cmd)
+        if (cmd !== requestedCommand) id = "stream-poll-status"
         createNewRequest(
             espHttpURL("command", {
                 cmd,
@@ -77,6 +84,7 @@ const useSettings = () => {
             },
             {
                 onSuccess: (result) => {
+                    streamPollingGuard.current.success(cmd, result)
                     if (
                         cmd.startsWith("[ESP") &&
                         !result.startsWith("ESP3D says:")
@@ -84,7 +92,8 @@ const useSettings = () => {
                         processData("response", result, result.startsWith("{"))
                     }
                 },
-                onFail: (error) => {
+                onFail: (error, details) => {
+                    if (streamPollingGuard.current.failure(cmd, details)) return
                     toasts.addToast({
                         content: error,
                         type: "error",
@@ -207,7 +216,7 @@ const useSettings = () => {
                     }
                     processData("core", "ESP800", true)
                     //console.log(connectionSettings.current)
-                    document.title = connectionSettings.current.Hostname
+                    document.title = "(better) ESP3D · " + connectionSettings.current.Hostname
                     if (
                         !connectionSettings.current.HostPath ||
                         !connectionSettings.current.HostPath.length
@@ -315,7 +324,7 @@ const useSettings = () => {
                 authenticate: true,
                 page: "connecting",
             })
-            document.title = connectionSettings.current.Hostname
+            document.title = "(better) ESP3D · " + connectionSettings.current.Hostname
             setTimeout(initPolling, 2000)
             console.log("Ui is ready")
             ui.setReady(true)

@@ -24,7 +24,8 @@ const expresscolor = chalk.green
 const commandcolor = chalk.white
 const enableAuthentication = false
 const SERIAL_PROTOCOL = "RAW"
-const SDCONNECTION = "none"
+const SDCONNECTION = "direct"
+let mockJob = null
 let lastconnection = Date.now()
 let logindone = false
 const sessiontTime = 60000
@@ -591,34 +592,25 @@ const commandsQuery = (req, res, SendWS, context) => {
         return
     }
 
-    if (url.indexOf("ESP701") != -1) {
-        if (isTFT) {
-            res.json({
-                cmd: "701",
-                status: "ok",
-                data: {
-                    status: "processing",
-                    total: "2089832",
-                    processed: "1481895",
-                    elapsed: "5739645",
-                    type: "5",
-                    name: "/sd/CUBE01.GCO",
-                },
-            })
-        } else {
-            res.json({
-                cmd: "701",
-                status: "ok",
-                data: {
-                    status: "processing",
-                    total: "159694",
-                    processed: "6719",
-                    type: "2",
-                    name: "/ESP3DPrintFile.gcode",
-                },
-            })
+    if (url.includes("ESP700")) {
+        if (mockJob) { res.status(409).send("A print is already active"); return }
+        const command = req.query.cmd || req.query.plain || ""
+        mockJob = { status: "processing", name: command.replace(/^.*?\[ESP700\]/, ""), processed: 0, total: 100000, type: "2" }
+        res.send("ok\n"); return
+    }
+    if (url.includes("ESP701")) {
+        const command = req.query.cmd || req.query.plain || ""
+        const action = command.match(/action=(PAUSE|RESUME|ABORT)/)?.[1]
+        if (action && !mockJob) { res.json({cmd:"701", status:"error", data:"No active print"}); return }
+        if (action === "PAUSE") mockJob.status = "pause"
+        if (action === "RESUME") mockJob.status = "processing"
+        if (action === "ABORT") mockJob = null
+        if (action) { res.json({cmd:"701", status:"ok", data:action + " requested"}); return }
+        if (mockJob?.status === "processing") {
+            mockJob.processed = Math.min(mockJob.total, mockJob.processed + 1000)
+            if (mockJob.processed === mockJob.total) mockJob = null
         }
-        return
+        res.json({cmd:"701", status:"ok", data:mockJob || "no stream"}); return
     }
 
     if (url.indexOf("ESP800") != -1) {
